@@ -33,55 +33,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Contact Form Handling
-const contactForm = document.getElementById('contactForm');
-if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Get form values
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const subject = document.getElementById('subject').value;
-        const message = document.getElementById('message').value;
-        
-        // Simple validation
-        if (!name || !email || !message) {
-            showFormMessage('Please fill in all required fields', 'error');
-            return;
-        }
-        
-        if (!isValidEmail(email)) {
-            showFormMessage('Please enter a valid email address', 'error');
-            return;
-        }
-        
-        // Show success message
-        showFormMessage('Message sent successfully! I\'ll get back to you soon.', 'success');
-        contactForm.reset();
-    });
-}
-
-// Email validation function
-function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-}
-
-// Show form message
-function showFormMessage(message, type) {
-    const formMessage = document.getElementById('formMessage');
-    if (formMessage) {
-        formMessage.textContent = message;
-        formMessage.className = 'form-message ' + type;
-        
-        // Hide message after 5 seconds
-        setTimeout(() => {
-            formMessage.style.display = 'none';
-        }, 5000);
-    }
-}
-
 // Animate skill bars when they come into view
 const skillBars = document.querySelectorAll('.skill-progress');
 if (skillBars.length > 0) {
@@ -201,3 +152,97 @@ document.addEventListener('DOMContentLoaded', function() {
         footerYear.innerHTML = footerYear.innerHTML.replace('2026', currentYear);
     }
 });
+
+// Chatbot Logic
+const chatInput = document.getElementById('userInput');
+const sendBtn = document.getElementById('sendBtn');
+const chatBox = document.getElementById('chatBox');
+
+// More detailed and ordered Q&A pairs for better matching. The first match found is used.
+const qaPairs = [
+    {
+        keywords: ["graduate", "graduated", "graduation"],
+        response: "He graduated at the end of 2025 with a National Diploma in ICT from the University of Mpumalanga."
+    },
+    {
+        keywords: ["education", "study", "diploma", "college", "university"],
+        response: "Prince holds a National Diploma in ICT from the University of Mpumalanga (2023-2025)."
+    },
+    {
+        keywords: ["hello", "hi", "hey"],
+        response: "Hi there! How can I help you learn more about Prince?"
+    },
+    {
+        keywords: ["who are you", "about you"],
+        response: "I am a simple AI assistant for Prince's portfolio. You can ask me about his skills, projects, and background."
+    },
+    {
+        keywords: ["who", "about", "tell me about"],
+        response: "Method Prince Mbowana is an ICT Graduate and a Web & Software Developer Intern at KayiseIT. He's passionate about using technology to solve real-world problems."
+    },
+    {
+        keywords: ["skill", "skills", "technologies"],
+        response: "Prince is skilled in Frontend (HTML, CSS, JavaScript, React, React Native) and Backend (PHP, Python, Node.js) development, plus databases like MySQL and MongoDB. For more, see the 'Contact' page."
+    },
+    {
+        keywords: ["project", "projects", "work"],
+        response: "He has worked on an edu-learning platform, a Smart Agriculture Monitoring System, and a campus map app. Check out the 'Projects' page for more details!"
+    },
+    {
+        keywords: ["contact", "email", "phone", "get in touch"],
+        response: "You can contact Prince via email at princembowana013@gmail.com or by phone at 072 617 3997."
+    },
+    {
+        keywords: ["experience", "intern", "kayiseit"],
+        response: "He is currently a Web & Software Developer Intern at KayiseIT."
+    }
+];
+
+const defaultResponse = "I'm not sure about that. Try asking about his skills, projects, education, or how to contact him.";
+
+function getBotResponse(userInput) {
+    const text = userInput.trim().toLowerCase();
+    if (text === "") return null;
+
+    // Find the best matching response
+    for (const pair of qaPairs) {
+        for (const keyword of pair.keywords) {
+            if (text.includes(keyword)) {
+                return pair.response;
+            }
+        }
+    }
+    
+    return defaultResponse;
+}
+
+function sendMessage() {
+    if (!chatInput || !chatBox) return;
+    
+    const userText = chatInput.value;
+    if (userText.trim() === "") return;
+    
+    // Add user message
+    const userDiv = document.createElement('div');
+    userDiv.className = 'user-message';
+    userDiv.textContent = userText;
+    chatBox.appendChild(userDiv);
+    
+    chatInput.value = '';
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    // Get and display bot response
+    const botResponse = getBotResponse(userText);
+    
+    setTimeout(() => {
+        const botDiv = document.createElement('div');
+        botDiv.className = 'bot-message';
+        botDiv.textContent = botResponse;
+        chatBox.appendChild(botDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }, 500);
+}
+
+// Event Listeners for Chat
+if (sendBtn) sendBtn.addEventListener('click', sendMessage);
+if (chatInput) chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
