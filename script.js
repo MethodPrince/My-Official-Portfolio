@@ -162,52 +162,61 @@ const chatBox = document.getElementById('chatBox');
 const qaPairs = [
     {
         keywords: ["graduate", "graduated", "graduation"],
-        response: "He graduated at the end of 2025 with a National Diploma in ICT from the University of Mpumalanga."
+        response: "Prince successfully completed his National Diploma in ICT at the University of Mpumalanga in 2025."
     },
     {
         keywords: ["education", "study", "diploma", "college", "university"],
-        response: "Prince holds a National Diploma in ICT from the University of Mpumalanga (2023-2025)."
+        response: "Prince holds a National Diploma in ICT from the University of Mpumalanga, covering the academic period from 2021 to 2023."
     },
     {
         keywords: ["hello", "hi", "hey"],
-        response: "Hi there! How can I help you learn more about Prince?"
+        response: "Greetings! I am Prince's professional AI assistant. How can I assist you in learning more about his qualifications and experience?"
     },
     {
         keywords: ["who are you", "about you"],
-        response: "I am a simple AI assistant for Prince's portfolio. You can ask me about his skills, projects, and background."
+        response: "I am a virtual assistant designed to provide information regarding Method Prince Mbowana's professional portfolio, including his technical expertise, educational background, and recent projects."
     },
     {
         keywords: ["who", "about", "tell me about"],
-        response: "Method Prince Mbowana is an ICT Graduate and a Web & Software Developer Intern at KayiseIT. He's passionate about using technology to solve real-world problems."
+        response: "Method Prince Mbowana is an ICT Graduate and a Web & Software Developer Intern at KayiseIT. He is dedicated to leveraging technology to create efficient, impactful software solutions."
     },
     {
         keywords: ["skill", "skills", "technologies"],
-        response: "Prince is skilled in Frontend (HTML, CSS, JavaScript, React, React Native) and Backend (PHP, Python, Node.js) development, plus databases like MySQL and MongoDB. For more, see the 'Contact' page."
+        response: "Prince is proficient in Full-Stack development, including Frontend (HTML/CSS, JavaScript, React, React Native) and Backend (Node.js, PHP, Python) technologies, along with database management in MySQL and MongoDB."
     },
     {
         keywords: ["project", "projects", "work"],
-        response: "He has worked on an edu-learning platform, a Smart Agriculture Monitoring System, and a campus map app. Check out the 'Projects' page for more details!"
+        response: "Prince has developed several notable projects, including a Full-Stack Educational Platform, an IoT-based Smart Agriculture System, and a Campus Map application. Detailed information is available on the 'Projects' page."
     },
     {
         keywords: ["contact", "email", "phone", "get in touch"],
-        response: "You can contact Prince via email at princembowana013@gmail.com or by phone at 072 617 3997."
+        response: "You may contact Prince professionally via email at princembowana013@gmail.com or by telephone at 072 617 3997."
     },
     {
         keywords: ["experience", "intern", "kayiseit"],
-        response: "He is currently a Web & Software Developer Intern at KayiseIT."
+        response: "Prince is currently gaining professional experience as a Web & Software Developer Intern at KayiseIT."
+    },
+    {
+        keywords: ["location", "where", "based", "nelspruit", "mbombela"],
+        response: "Prince is currently based in Mbombela, Nelspruit, South Africa."
+    },
+    {
+        keywords: ["qualification", "education", "degree", "university", "cum laude", "cumlaude", "honors", "laude"],
+        response: "Prince holds a National Diploma in ICT from the University of Mpumalanga. He is a qualified Web application developer who graduated with Cum Laude honors."
     }
 ];
 
-const defaultResponse = "I'm not sure about that. Try asking about his skills, projects, education, or how to contact him.";
+const defaultResponse = "I apologize, but I do not have specific information regarding that query. Please feel free to ask about Prince's technical skills, academic qualifications, portfolio projects, or professional background.";
 
 function getBotResponse(userInput) {
     const text = userInput.trim().toLowerCase();
     if (text === "") return null;
 
-    // Find the best matching response
+    // Find the best matching response using word boundaries for precise matching
     for (const pair of qaPairs) {
         for (const keyword of pair.keywords) {
-            if (text.includes(keyword)) {
+            const regex = new RegExp(`\\b${keyword}\\b`, 'i');
+            if (regex.test(text)) {
                 return pair.response;
             }
         }
